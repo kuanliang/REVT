@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block javascript %}
+var chart{{ typedb }};
+$(function(){
+	var options = clone(full_options);
+	options.chart.renderTo= 'chart{{ typedb }}';
+	options.title.text='Chooice Your Region';
+	$.ajax({
+		url: "/gendbs/data_json2/{{ typedb }}/",
+		method: 'GET',
+		dataType: 'json',
+		error:function(){
+			alert("error");
+		},
+		success: function(ret){
+			options.series.push(ret.Accuracy);
+			options.series.push(ret.Entropy);
+			
+			for(x in ret.Primer_Name.data){
+				var tmp = ret.Primer_Name.data[x];
+				var primer=clone(primer_series);	
+				primer.name=tmp[0];
+				primer.data[0].x=tmp[1];
+				primer.data[0].y=tmp[3];
+				primer.data[1].x=tmp[2];
+				primer.data[1].y=tmp[3];
+				options.series.push(primer);
+			}
+
+			for(x in ret.Vregion_Name.data)
+			{
+				var tmp = ret.Vregion_Name.data[x];
+				var vregion=clone(vregion_series);
+				vregion.name=tmp[0];
+				vregion.data[0].x=tmp[1];
+				vregion.data[0].y=tmp[3];
+				vregion.data[1].x=tmp[2];
+				vregion.data[1].y=tmp[3];
+				//console.log(vregion);
+				options.series.push(vregion);
+
+			}
+			chart{{ typedb }} = new Highcharts.Chart(options);
+		}
+	});
+			
+	$(":input[name=start], :input[name=end], :input[name=diff], :input[name=primer], :input[name=vregion]", "#myForm{{ typedb }}").unbind("change").change(AutoSelection);
+});
+
+function AutoSelection(){
+	var start=0, end=0, diff=0;
+	if($(this).attr("name")=="primer")				
+	{
+		var value=$("option:selected", this).text();
+		var temp=value.match(/(\d+)-(\d+)/);
+		start=eval(temp[1]);
+		end=eval(temp[2]);
+		$(":input[name=start], :input[name=end]", "#myForm{{ typedb }}").attr("readonly", false);
+		if(end > start)
+		{
+			$(":input[name=start]", "#myForm{{ typedb }}").attr("readonly",true);
+			start = end+1;
+			end=start+20;
+		}
+		else
+		{
+			$(":input[name=end]", "#myForm{{ typedb }}").attr("readonly", true);
+			end=end-1;
+			start=end-20;
+		}
+	}
+	else if($(this).attr("name")=="vregion")
+	{
+		var value=$("option:selected", this).text();
+		var temp=value.match(/(\d+)-(\d+)/);
+		start=eval(temp[1]);
+		end=eval(temp[2]);
+	}
+	else if($(this).attr("name")=="start" || $(this).attr("name")=="end" )
+	{
+		start=eval($(":input[name=start]", "#myForm{{ typedb }}").val());
+		end=eval($(":input[name=end]", "#myForm{{ typedb }}").val());
+		if(start==undefined)
+			start=end-30;
+		if(end==undefined)
+			end=start+30;
+	}
+	else
+	{
+		start=eval($(":input[name=start]", "#myForm{{ typedb }}").val());
+		end=eval($(":input[name=end]", "#myForm{{ typedb }}").val());
+		diff=eval($(":input[name=diff]", "#myForm{{ typedb }}").val());
+		if($(":input[name=end]", "#myForm{{ typedb }}").attr("disabled"))
+			start=end-diff;
+		else
+			end=start+diff;
+	}
+	$(":input[name=start]", "#myForm{{ typedb }}").val(start);
+	$(":input[name=end]", "#myForm{{ typedb }}").val(end);
+	$(":input[name=diff]", "#myForm{{ typedb }}").val(end-start);
+	for(var x in chart{{ typedb }}.series){
+		if(chart{{ typedb }}.series[x].name=="Your Selection")
+				chart{{ typedb }}.series[x].remove();
+	}
+	chart{{ typedb }}.addSeries({
+		data: [[start, 0.98], [end, 0.98]],
+		type: 'area',
+		name: 'Your Selection'
+	});
+
+}
+
+{% endblock %}
+{% block content %}
+<div id="chart{{ typedb }}" style="width:100%;height:350px;"></div>
+{% endblock %}

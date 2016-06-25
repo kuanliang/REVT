@@ -1,0 +1,83 @@
+
+<script id="source" language="javascript" type="text/javascript">
+/*
+	draw_plot(
+		$data: data url;
+		$plot-type: line or column;
+		$div: div name;
+		$caption: table Caption;
+		$title: plot Title;
+		$xtitle: plot X-Title;
+		$ytitle: plot Y-Title;
+
+*/
+
+$(function(){
+	draw_plot(
+		'/site_media/json/data2/LR0R.RDP.Accuracy.json', 
+		'column', 
+		'RDP-LR0R-1', 
+		'LR0R Accuracy from RDP classifier - LOOCV', 
+		'LR0R RDP Accuracy', 
+		'', 
+		'Accuracy',
+		'[your description]');
+
+	draw_plot(
+		'/site_media/json/data2/LR0R.RDP.Bootstrap.json', 
+		'column', 
+		'RDP-LR0R-2', 
+		'LR0R Bootstrap from RDP classifier - LOOCV', 
+		'LR0R RDP Bootstrap', 
+		'', 
+		'Accuracy',
+		'');
+
+	draw_plot(
+		'/site_media/json/data2/LR3.RDP.Accuracy.json', 
+		'column', 
+		'RDP-LR3-1', 
+		'LR3 Accuracy from RDP classifier - LOOCV', 
+		'LR3 RDP Accuracy', 
+		'', 
+		'Accuracy',
+		'');
+
+	draw_plot(
+		'/site_media/json/data2/LR3.RDP.Bootstrap.json',
+		'column', 
+		'RDP-LR3-2', 
+		'LR3 Bootstrap from RDP classifier - LOOCV', 
+		'LR3 RDP Bootstrap', 
+		'', 
+		'Accuracy',
+		'');
+
+	draw_plot(
+		'/site_media/json/data2/LR0R.BLAST.Accuracy.json', 
+		'column', 
+		'BLAST-LR0R', 
+		'LR0R Bootstrap from BLAST classifier - LOOCV', 
+		'LR0R BLAST Accuracy', 
+		'', 
+		'Accuracy',
+		'');
+
+	draw_plot(
+		'/site_media/json/data2/LR3.BLAST.Accuracy.json', 
+		'column', 
+		'BLAST-LR3', 
+		'LR3 Bootstrap from BLAST classifier - LOOCV', 
+		'LR3 BLAST Accuracy', 
+		'', 
+		'Accuracy',
+		'');
+});
+</script>
+<h1>&lt;Your Header Description&gt;</h1>
+<div id="RDP-LR0R-1" class="grid_12 my_plot"></div>
+<div id="RDP-LR0R-2" class="grid_12 my_plot"></div>
+<div id="RDP-LR3-1" class="grid_12 my_plot"></div>
+<div id="RDP-LR3-2" class="grid_12 my_plot"></div>
+<div id="BLAST-LR0R" class="grid_12 my_plot"></div>
+<div id="BLAST-LR3" class="grid_12 my_plot"></div>

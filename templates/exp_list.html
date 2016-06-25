@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+{% block javascript %}
+	var chart1, chart2;
+	var result1=[{{ result1|safe }}];
+	var result2=[{{ result2|safe }}];
+	var region1=[{{ range1|safe }}];
+	var region2=[{{ range2|safe }}];
+	var naive1=[{{ naive1|safe }}];
+	var naive2=[{{ naive2|safe }}];
+
+
+	$(function(){
+		$("#tabs_list" ).tabs({
+			show: function(){
+				var selected = $("#tabs_list").tabs("option", "selected");
+				if(selected==0)
+				{
+					$("#tab1").show();
+					$("#tab2").hide();
+				}
+				else{
+					$("#tab2").show();
+					$("#tab1").hide();
+				}
+			}
+		});
+		$("#tab1").tabs();
+		$("#tab2").tabs();
+		$.ajax({
+			url: "/gendbs/data_json2/1/",
+			method: 'GET',
+			dataType: 'json',
+			error: function(){
+				alert("fail!");
+			},
+			success: function(ret){
+				var region1_options=clone(full_options);
+
+				region1_options.chart.renderTo='chart_region1';
+				region1_options.title.text='Your Selection';
+				region1_options.plotOptions.area.color='';
+
+
+				region1_options.series.push(ret.Accuracy);
+				region1_options.series.push(ret.Entropy);
+				
+				for(x in ret.Primer_Name.data){
+					var tmp = ret.Primer_Name.data[x];
+					var primer=clone(primer_series);	
+					primer.name=tmp[0];
+					primer.data[0].x=tmp[1];
+					primer.data[0].y=tmp[3];
+					primer.data[1].x=tmp[2];
+					primer.data[1].y=tmp[3];
+					region1_options.series.push(primer);
+				}
+
+				for(x in ret.Vregion_Name.data)
+				{
+					var tmp = ret.Vregion_Name.data[x];
+					var vregion=clone(vregion_series);
+					vregion.name=tmp[0];
+					vregion.data[0].x=tmp[1];
+					vregion.data[0].y=tmp[3];
+					vregion.data[1].x=tmp[2];
+					vregion.data[1].y=tmp[3];
+					region1_options.series.push(vregion);
+				}
+				for(x in region1)
+				{
+					var region = clone(selection_options);
+					region.name=region1[x].name;
+					
+					region.data=region1[x].data;
+					region1_options.series.push(region);
+				}
+				var chart1 = new Highcharts.Chart(region1_options);
+			}
+		});
+		$.ajax({
+			url: "/gendbs/data_json2/2/",
+			method: 'GET',
+			dataType: 'json',
+			error: function(){
+				alert("fail!");
+			},
+			success: function(ret){
+				var region2_options=clone(full_options);
+
+				region2_options.chart.renderTo='chart_region2';
+				region2_options.title.text='Your Selection';
+				region2_options.plotOptions.area.color='';
+
+				region2_options.series.push(ret.Accuracy);
+				region2_options.series.push(ret.Entropy);
+				
+				for(x in ret.Primer_Name.data){
+					var tmp = ret.Primer_Name.data[x];
+					var primer=clone(primer_series);	
+					primer.name=tmp[0];
+					primer.data[0].x=tmp[1];
+					primer.data[0].y=tmp[3];
+					primer.data[1].x=tmp[2];
+					primer.data[1].y=tmp[3];
+					region2_options.series.push(primer);
+				}
+
+				for(x in ret.Vregion_Name.data)
+				{
+					var tmp = ret.Vregion_Name.data[x];
+					var vregion=clone(vregion_series);
+					vregion.name=tmp[0];
+					vregion.data[0].x=tmp[1];
+					vregion.data[0].y=tmp[3];
+					vregion.data[1].x=tmp[2];
+					vregion.data[1].y=tmp[3];
+					region2_options.series.push(vregion);
+				}
+				for(x in region2)
+				{
+					var region = clone(selection_options);
+					region.name=region2[x].name;
+					
+					region.data=region2[x].data;
+					region2_options.series.push(region);
+				}
+				var chart2 = new Highcharts.Chart(region2_options);
+			}
+		});
+
+		var options_result1 = clone(class_options);	
+		var options_result2 = clone(class_options);
+		var options_region1 = clone(full_options);
+		var options_region2 = clone(full_options);
+
+		options_result1.series=result1;
+		options_result2.series=result2;
+
+		options_result1.chart.renderTo='chart_result1';
+		options_result2.chart.renderTo='chart_result2';
+		if(options_result1.series.length)
+			var chart2  = new Highcharts.Chart(options_result1);
+		if(options_result2.series.length)
+			var chart4  = new Highcharts.Chart(options_result2);
+
+		var naive_options1 = clone(naive_options);
+		for(x in naive1)
+		{
+			var naive_series1=clone(naive_series);
+			naive_series1.name=naive1[x].name
+			for(y in naive1[x].data)
+			{
+					
+				naive_series1.data[y].x=naive1[x].data[y][0];
+				naive_series1.data[y].y=naive1[x].data[y][1];
+			}
+			naive_options1.series.push(naive_series1);
+		}
+
+		naive_options1.chart.renderTo='chart_naive1';
+		if(naive_options1.series.length)
+			var chart5 = new Highcharts.Chart(naive_options1);
+
+		var naive_options2 = clone(naive_options);
+		for(x in naive2)
+		{
+			var naive_series2=clone(naive_series);
+			naive_series2.name=naive2[x].name
+			for(y in naive2[x].data)
+			{
+					
+				naive_series2.data[y].x=naive2[x].data[y][0];
+				naive_series2.data[y].y=naive2[x].data[y][1];
+			}
+			naive_options2.series.push(naive_series2);
+		}
+
+		naive_options2.chart.renderTo='chart_naive2';
+		if(naive_options2.series.length)
+			var chart6 = new Highcharts.Chart(naive_options2);
+
+	});
+
+{% endblock %}
+{% block content %}
+<h1>Result</h1>
+<div id="tabs_list" class="grid_12">
+	<ul>
+		<li><a href="#tab-bectera">Becteria</a></li>
+		<li><a href="#tab-fungi">Fungi</a></li>
+	</ul>
+		<div id="tab-bectera">
+			<table>
+				<caption>Your Table Name</caption>
+				<thead>
+				<tr>
+					<th rowspan="2">Name</th>
+					<th rowspan="2">Database</th>
+					<th rowspan="2">Exaction</th>
+					<th rowspan="2">Start</th>
+					<th rowspan="2">End</th>
+					<th rowspan="2">Classifier</th>
+					<th rowspan="2">Create date</th>
+					<th colspan="6" style="text-align: center;">Accuracy (%)</th>
+				</tr>
+				<tr>
+					<th>Domain</th>
+					<th>Plylum</th>
+					<th>Class</th>
+					<th>Order</th>
+					<th>Family</th>
+					<th>Genus</th>
+				</tr>
+				</thead>
+				<tbody>
+					{{ becteria|safe }}
+				</tbody>
+			</table>
+		</div>
+		<div id="tab-fungi">
+			<table>
+				<caption>Your Table Name</caption>
+				<thead>
+				<tr>
+					<th rowspan="2">Name</th>
+					<th rowspan="2">Database</th>
+					<th rowspan="2">Exaction</th>
+					<th rowspan="2">Start</th>
+					<th rowspan="2">End</th>
+					<th rowspan="2">Classifier</th>
+					<th rowspan="2">Create date</th>
+					<th colspan="6" style="text-align: center;">Accuracy (%)</th>
+				</tr>
+				<tr>
+					<th>Domain</th>
+					<th>Plylum</th>
+					<th>Class</th>
+					<th>Order</th>
+					<th>Family</th>
+					<th>Genus</th>
+				</tr>
+				</thead>
+				<tbody>
+					{{ fungi|safe }}
+				</tbody>
+			</table>
+		</div>
+</div>
+<div id="tab1" class="grid_12">
+	<ul>
+		<li><a href="#chart_tab1-1">Selection</a></li>
+		<li><a href="#chart_tab1-2">Accuracy</a></li>
+		<li><a href="#chart_tab1-3">Navie</a></li>
+	</ul>
+	<div id="chart_tab1-1">
+		<div id="chart_region1" style="width: 900px; height: 300px;"></div>	
+	</div>
+	<div id="chart_tab1-2">
+		<div id="chart_result1" style="width: 900px; height: 300px;"></div>	
+	</div>
+	<div id="chart_tab1-3">
+		<div id="chart_naive1" style="width: 900px; height: 300px;"></div>	
+	</div>
+
+</div>
+<div id="tab2" class="grid_12">
+	<ul>
+		<li><a href="#chart_tab2-1">Selection</a></li>
+		<li><a href="#chart_tab2-2">Accuracy</a></li>
+		<li><a href="#chart_tab2-3">Navie</a></li>
+	</ul>
+	<div id="chart_tab2-1">
+		<div id="chart_region2" style="width: 900px; height: 300px;"></div>	
+	</div>
+	<div id="chart_tab2-2">
+		<div id="chart_result2" style="width: 900px; height: 300px;"></div>	
+	</div>
+	<div id="chart_tab2-3">
+		<div id="chart_naive2" style="width: 900px; height: 300px;"></div>	
+	</div>
+
+</div>
+{% endblock %}

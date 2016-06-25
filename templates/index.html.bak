@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title>rRNA Utitlty</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<link type="text/css" href="/site_media/css/smoothness/jquery-ui-1.8.9.custom.css" rel="stylesheet" />	
+	<script type="text/javascript" src="/site_media/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="/site_media/js/jquery-ui-1.8.9.custom.min.js"></script>
+	<script type="text/javascript" src="/site_media/js/jquery-ui-1.8.9.custom.min.js"></script>
+	<!--[if IE]><script language="javascript" type="text/javascript" src="../excanvas.min.js"></script><![endif]-->
+	<script type="text/javascript" src="/site_media/js/jquery.flot.min.js"></script>
+	<script type="text/javascript" src="/site_media/js/jquery.flot.selection.min.js"></script>
+	<script type="text/javascript" src="/site_media/js/highcharts.js"></script>
+	<script type="text/javascript" src="/site_media/js/jquery.form.js"></script>
+	<script type="text/javascript" src="/site_media/js/grid.js"></script>
+	<script type="text/javascript" src="/site_media/js/my.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('#tabs').tabs({selected:{{ index }}});
+			//Highcharts.setOptions(Highcharts.theme);
+			   
+		});
+	</script>
+	<style type="text/css">
+		body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 0px 30px;}
+		fieldset{width: 300px;}
+		label{display: inline-block; width: 100px; font-weight: bold; text-align: right; margin-right: 10px;}
+		.mytable{width: 1100px;border-collapse: collapse; text-align: left;background: #eee;border:1px solid gray; }
+		.mytable th{border-bottom: 2px solid gray;}
+		.mytable td{border-bottom: 1px solid gray;}
+		.mytable tr:hover td{color: #009;}
+	</style>	
+</head>
+<body>
+	<h1>rRNA utility</h1>
+	{% if login %}
+		Hello!{{ user.first_name }} {{ user.last_name }} <a href="/accounts/logout/">Logout</a>
+	{% endif %}
+	<div id="tabs">
+		<ul>
+			<li><a href="/site_media/home.html">Home</a></li>
+			<li><a href="/site_media/help.html">Test</a></li>
+			<li><a href="/site_media/readme.html">ReadMe</a></li>
+			<li><a href="/site_media/contact.html">Contact Me</a></li>
+			<li><a href="/gendbs/history/">History</a></li>
+			{% if login %}
+				<li><a href="/gendbs/post/1/">Post-Becteria</a></li>
+				<li><a href="/gendbs/post/2/">Post-Fungi</a></li>
+				<li><a href="/gendbs/list/">Result</a></li>
+			{% else %}
+				<li><a href="/accounts/login/">Login</a></li>
+			{% endif %}
+		</ul>
+	</div>
+				
+</body>
+</html>
+
+

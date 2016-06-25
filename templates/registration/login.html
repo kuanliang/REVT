@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<h1>Login Your Account</h1>	
+	{% if form.errors %}
+		<p class="error">Sorry, that's not a valid username or password</p>
+	{% endif %}
+	<form action="/accounts/login/" method="post">
+	<div class="grid_12">
+	<fieldset>
+		<p>
+			<label for="username">User name:</label>
+			<input type="text" name="username" value="" id="username">
+		</p>
+		<p>
+			<label for="password">Password:</label>
+			<input type="password" name="password" vlaue="" id="password">
+		</p>
+		<p style="text-align:center;">
+			<input type="submit" value="Login" />
+			<input type="hidden" name="next" value="/test/" />
+		</p>
+	</fieldset>
+	</form>
+	</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+<script language="javascript" type="text/javascript">
+var chart;
+$(function(){
+	$.ajax({
+		url: "/gendbs/data_json2/1/",
+		method: 'GET',
+		dataType: 'json',
+		error:function(){
+			alert("error");
+		},
+		success: function(ret){
+			var options=clone(full_options);
+			options.series.push(ret.Accuracy);
+			options.series.push(ret.Entropy);
+			
+			for(x in ret.Primer_Name.data){
+				var tmp = ret.Primer_Name.data[x];
+				var primer = {
+					type: 'line',
+					name: '',
+					data: [{
+						x: 0,
+						y: 0,
+						marker:{
+							enabled: false
+						}
+					},{
+						x: 0,
+						y: 0,
+						id: 'start'
+					}]
+				};
+
+				primer.name=tmp[0];
+				primer.data[0].x=tmp[1];
+				primer.data[0].y=tmp[3];
+				primer.data[1].x=tmp[2];
+				primer.data[1].y=tmp[3];
+				options.series.push(primer);
+			}
+
+			for(x in ret.Vregion_Name.data)
+			{
+				var tmp = ret.Vregion_Name.data[x];
+				var vregion = {
+					type: 'line',
+					name: '',
+					data: [{
+						x: 0,
+						y: 0,
+						marker:{
+							enabled: false
+						},
+						id: 'start'
+					},{
+						x: 0,
+						y: 0,
+						marker:{
+							enabled: false
+						}
+					}]
+				};
+				vregion.name=tmp[0];
+				vregion.data[0].x=tmp[1];
+				vregion.data[0].y=tmp[3];
+				vregion.data[1].x=tmp[2];
+				vregion.data[1].y=tmp[3];
+				//console.log(vregion);
+				options.series.push(vregion);
+
+			}
+			chart = new Highcharts.Chart(options);
+		}
+	});
+	$(":input[name=area]").click(function(){
+		for(x in chart.series){
+			if(chart.series[x].name=="Your Selection")
+			{
+				chart.series[x].remove();
+
+			}
+		}
+		chart.addSeries({
+			data: [[500, 0.98], [1000, 0.98]],
+			type: 'area',
+			name: 'Your Selection'
+		});
+	});
+});
+</script>
+<div id="chart" style="width: 1000px; height: 400px;"></div>
+<input type="button" value="Add Area" name="area">

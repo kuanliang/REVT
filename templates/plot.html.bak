@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block javascript %}
+$(function () {
+ var options = {
+ 	series:{
+		lines: {show: true}
+	},
+	xaxis: { tickDecimals: 0, max:1800, min:0 },
+	yaxis: { min: 0 , max:1},
+	position: 'ne',
+	selection: { mode: "x" }
+ };
+
+	var dataset=[];
+	$.ajax({
+		url: "/gendbs/data_json/{{ typedb }}/", 
+		method: 'GET',
+		dataType: 'json',
+		error: function(){
+			alert('fddd');
+		},
+		success: function(ret){
+			function AutoSelection(){
+				var start=0, end=0, diff=0;
+				if($(this).attr("name")=="primer")				
+				{
+					var value=$("option:selected", this).text();
+					var temp=value.match(/(\d+)-(\d+)/);
+					start=eval(temp[1]);
+					end=eval(temp[2]);
+					$(":input[name=start], :input[name=end]", "#myForm{{ typedb }}").attr("readonly", false);
+					if(end > start)
+					{
+						$(":input[name=start]", "#myForm{{ typedb }}").attr("readonly",true);
+						start = end+1;
+						end=start+20;
+					}
+					else
+					{
+						$(":input[name=end]", "#myForm{{ typedb }}").attr("readonly", true);
+						end=end-1;
+						start=end-20;
+					}
+				}
+				else if($(this).attr("name")=="vregion")
+				{
+
+					var value=$("option:selected", this).text();
+					var temp=value.match(/(\d+)-(\d+)/);
+					start=temp[1];
+					end=temp[2];
+				}
+				else if($(this).attr("name")=="start" || $(this).attr("name")=="end" )
+				{
+					start=eval($(":input[name=start]", "#myForm{{ typedb }}").val());
+					end=eval($(":input[name=end]", "#myForm{{ typedb }}").val());
+					if(start==undefined)
+						start=end-30;
+					if(end==undefined)
+						end=start+30;
+				}
+				else
+				{
+					start=eval($(":input[name=start]", "#myForm{{ typedb }}").val());
+					end=eval($(":input[name=end]", "#myForm{{ typedb }}").val());
+					diff=eval($(":input[name=diff]", "#myForm{{ typedb }}").val());
+					if($(":input[name=end]", "#myForm{{ typedb }}").attr("disabled"))
+						start=end-diff;
+					else
+						end=start+diff;
+				}
+				$(":input[name=start]", "#myForm{{ typedb }}").val(start);
+				$(":input[name=end]", "#myForm{{ typedb }}").val(end);
+				$(":input[name=diff]", "#myForm{{ typedb }}").val(end-start);
+				plot.setSelection({ x1: start, x2: end });
+			}
+
+			dataset.push(ret.Accuracy);
+			dataset.push(ret.Entropy);
+			dataset.push(ret.Primer);
+			dataset.push(ret.Vregion);
+			plot = $.plot($("#plot{{ typedb }}"), dataset, options);
+			
+			$(":input[name=start], :input[name=end], :input[name=diff], :input[name=primer], :input[name=vregion]", "#myForm{{ typedb }}").unbind("change").change(AutoSelection);
+
+			for(var i in data=ret.Primer_Name.data)
+			{
+				var off = data[i][2]-data[i][1];
+				var ctx = plot.getCanvas().getContext("2d");
+				if(off>0)
+				{
+					var o = plot.pointOffset({x: data[i][2], y: data[i][3]});
+					$("#plot{{ typedb }}").append('<div style="position:absolute;left:'+(o.left)+'px;top:'+(o.top - 15)+'px;clor:black;font-size:smaller;">'+data[i][0]+'</div>');
+					ctx.beginPath();
+					ctx.moveTo(o.left, o.top);
+					ctx.moveTo(o.left, o.top +5);
+					ctx.lineTo(o.left-3, o.top);
+				}
+				else
+				{
+					var o = plot.pointOffset({x: data[i][2], y: data[i][3]});
+					$("#plot{{ typedb }}").append('<div style="position:absolute;left:'+o.left+'px;top:'+(o.top - 15)+'px;clor:black;font-size:smaller;">'+data[i][0]+'</div>');
+					ctx.beginPath();
+					ctx.moveTo(o.left, o.top);
+					ctx.moveTo(o.left, o.top +5);
+					ctx.lineTo(o.left+3, o.top);
+
+				}
+				ctx.lineTo(o.left, o.top);
+				ctx.fillStyle="#cb4b4b";
+				ctx.fill();
+
+
+			}
+			for(var i in data=ret.Vregion_Name.data)
+			{
+				var o = plot.pointOffset({x: data[i][1], y: data[i][2]});
+				$("#plot{{ typedb }}").append('<div style="position:absolute;left:'+(o.left)+'px;top:'+(o.top - 15)+'px;clor:black;font-size:smaller;">'+data[i][0]+'</div>');
+
+			}
+
+		}
+	});
+
+});
+{% endblock %}
+{% block content %}
+<div id="plot{{ typedb }}" style="width:750px;height:250px;"></div>
+{% endblock %}
+

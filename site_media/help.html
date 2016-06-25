@@ -1,0 +1,70 @@
+<script id="source" language="javascript" type="text/javascript">
+$(function () {
+ var options = {
+ 	series:{
+		lines: {show: true}
+	},
+	xaxis: { tickDecimals: 0, max:1600, min:0 },
+	yaxis: { min: 0 , max:1},
+	position: 'ne',
+	selection: { mode: "x" }
+ };
+
+	var dataset=[];
+	$.ajax({
+		url: "/gendbs/data_json/1/", 
+		method: 'GET',
+		dataType: 'json',
+		error: function(){
+			alert('fddd');
+		},
+		success: function(ret){
+			dataset.push(ret.Accuracy);
+			dataset.push(ret.Entropy);
+			dataset.push(ret.Primer);
+			dataset.push(ret.Vregion);
+			plot = $.plot($("#plot"), dataset, options);
+			
+			for(var i in data=ret.Primer_Name.data)
+			{
+				var off = data[i][2]-data[i][1];
+				var ctx = plot.getCanvas().getContext("2d");
+				if(off>0)
+				{
+					var o = plot.pointOffset({x: data[i][2], y: data[i][3]});
+					$("#plot").append('<div style="position:absolute;left:'+(o.left-off)+'px;top:'+(o.top - 15)+'px;clor:black;font-size:smaller;">'+data[i][0]+'</div>');
+					ctx.beginPath();
+					ctx.moveTo(o.left, o.top);
+					ctx.moveTo(o.left, o.top +10);
+					ctx.lineTo(o.left-5, o.top);
+				}
+				else
+				{
+					var o = plot.pointOffset({x: data[i][2], y: data[i][3]});
+					$("#plot").append('<div style="position:absolute;left:'+o.left+'px;top:'+(o.top - 15)+'px;clor:black;font-size:smaller;">'+data[i][0]+'</div>');
+					ctx.beginPath();
+					ctx.moveTo(o.left, o.top);
+					ctx.moveTo(o.left, o.top +10);
+					ctx.lineTo(o.left+5, o.top);
+
+				}
+				ctx.lineTo(o.left, o.top);
+				ctx.fillStyle="#cb4b4b";
+				ctx.fill();
+
+
+			}
+			for(var i in data=ret.Vregion_Name.data)
+			{
+				var o = plot.pointOffset({x: data[i][1], y: data[i][2]});
+				$("#plot").append('<div style="position:absolute;left:'+(o.left)+'px;top:'+(o.top - 15)+'px;clor:black;font-size:smaller;">'+data[i][0]+'</div>');
+
+			}
+
+		}
+	});
+});
+</script>
+<div id="plot" style="width:1000px;height:300px;"></div>
+
+

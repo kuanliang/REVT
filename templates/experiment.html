@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block javascript %}
+$(function(){
+	var options = {dataType:"json", success: function(data){
+		if(data.status=="success")
+		{
+			$("#message{{ typedb}}").html("Save Success");
+			$("#myForm{{ typedb}}").clearForm();
+		}
+		else
+		{
+			$("#message{{ typedb}}").html("Fields["+ data.item +"] error");
+		}
+	}};
+
+	$("#primer{{ typedb}}, #vregion{{ typedb }}").hide();
+	$(":input[name=extraction]").change(function(){
+		$("#primer{{ typedb }}, #vregion{{ typedb }}").hide();
+		if($(this).val()!=="1")
+			$(":input[name=start], :input[name=end]", "#myForm{{ typedb }}").attr("readonly",false);
+		if($(this).val()=="1")
+			$("#primer{{ typedb }}").show();
+		else if($(this).val()=="2")
+			$("#vregion{{ typedb }}").show();
+	});
+	$("#bootstrap{{ typedb }}").hide();
+	$(":input[name=classifier]").change(function(){
+		$("#bootstrap{{ typedb }}").hide();
+		if($(this).val()=="3")
+			$("#bootstrap{{ typedb }}").show();
+	});
+	$("#myForm{{ typedb}}").ajaxForm(options);
+});
+{% endblock %}
+{% block content %}
+	<h1>Post Your Experiment Data</h1>
+	<div id="message{{ typedb}}" class="grid_12"></div>
+	<div class="grid_4">
+	<form action="/gendbs/post/" method="post" id="myForm{{ typedb}}">
+		<fieldset>
+			<input type="hidden" name="users" value="{{ user.id }}">
+			<input type="hidden" name="typedb" value="{{ typedb }}">
+			<p><label>Experiment Name:</label>{{ form.name }}{{ form.name.errors }}</p>
+			<p><label>Database:</label>{{ form.refdb }}{{ form.refdb.errors }}</p>
+			<p><label>Extraction:</label>{{ form.extraction }}{{ form.extraction.errors }}</p>
+			<p id="primer{{ typedb }}"><label>Primer:</label>{{ form.primer }} {{ form.primer.errors }}</p>
+			<p id="vregion{{ typedb }}"><label>Vregion:</label>{{ form.vregion }}{{ form.vregion.errors }}</p>
+			<p><label>Range(start-end):</label><input type="text" name="start" value="" size="5">-<input type="text" name="end" value="" size="5"> Len:<input type="text" name="diff" size="3" value="">{{ form.start.errors }}</p>
+			<p><label>Specific:</label><input type="radio" name="specific" value="1">Full <input type="radio" name="specific" value="0" checked>Specific {{ form.specific.errors }}</p>
+			<p><label>Classifier:</label>{{ form.classifier }}{{ form.classifier.errors }}</p>
+			<p id="bootstrap{{ typedb }}"><label>Bootstrap rate:</label>{{ form.bootstrap }}{{ form.bootstrap.errors }}</p>
+			<p><label>Description:</label><textarea name="desc" style="width: 150px; height: 60px;"></textarea></p>
+		</fieldset>
+		<p style="text-align: center"><input type="submit" value="Save"></p>
+	</form>
+	</div>
+	<div class="grid_8">
+	{% include  "plot.html" %}
+	</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+
+<script id="source" language="javascript" type="text/javascript">
+/*
+	draw_plot(
+		$data: data url;
+		$plot-type: line or column;
+		$div: div name;
+		$caption: table Caption;
+		$title: plot Title;
+		$xtitle: plot X-Title;
+		$ytitle: plot Y-Title;
+
+*/
+
+$(function(){
+	draw_plot_table(
+		'/site_media/json/16S/Primer_accuracies.json', 
+		'column', 
+		'Primer-Accuracy-Table', 
+		'Classification acuracy by query sequence length and primer position', 
+		'Classfication Accuracy', 
+		'Primer', 
+		'Accuracy',
+		'[your description]');
+
+	draw_plot_plot(
+		'/site_media/json/16S/Primer_accuracies.json', 
+		'column', 
+		'Primer-Accuracy-Plot', 
+		'Classification acuracy by query sequence length and primer position', 
+		'Classfication Accuracy', 
+		'Primer', 
+		'Accuracy',
+		'[your description]');
+		
+		
+});
+</script>
+<h1>&lt;Your Header Description&gt;</h1>
+<div id="Primer-Accuracy-Table" class="grid_12 my_plot"></div>
+<div id="Primer-Accuracy-Plot" class="grid_12 my_plot"></div>

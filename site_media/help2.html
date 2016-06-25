@@ -1,0 +1,116 @@
+<script id="source" language="javascript" type="text/javascript">
+$(function () {
+ var options = {
+ 	series:{
+		lines: {show: true}
+	},
+	xaxis: { tickDecimals: 0, max:1600, min:0 },
+	yaxis: { min: 0 , max:1},
+	position: 'ne',
+	selection: { mode: "x" }
+ };
+
+	var dataset=[];
+	$.ajax({
+		url: "/gendbs/hyper_json/2/", 
+		method: 'GET',
+		dataType: 'json',
+		success: function(ret){
+			dataset.push(ret.Accuracy);
+			dataset.push(ret.Entropy);
+			plot = $.plot($("#plot"), dataset, options);
+			$.ajax({
+				url: "/gendbs/Vregion_json/2/",
+				method: 'GET',
+				dataType: 'json',
+				success: function(ret){
+					var data = ret.data;
+					var vregion=[];
+					vregion["data"]=[];
+					vregion["label"]="Vregion";
+					for(var i in data)
+					{
+						vregion["data"].push([data[i].value[0], data[i].top]);
+						vregion["data"].push([data[i].value[1], data[i].top]);
+						vregion["data"].push(null);
+												
+					}
+					dataset.push(vregion);
+					plot = $.plot($("#plot"), dataset, options);
+					for(var i in data)
+					{
+						var o = plot.pointOffset({x: data[i].value[0], y: data[i].top});
+						$("#plot").append('<div style="position:absolute;left:'+(o.left)+'px;top:'+(o.top - 15)+'px;clor:black;font-size:smaller;">'+data[i].name+'</div>');
+					}
+
+
+				}
+			});
+			$.ajax({
+				url: "/gendbs/Primer_json/2/",
+				method: 'GET',
+				dataType: 'json',
+				success: function(ret){
+					var data = ret.data;
+					var primer=[];
+					primer["data"]=[];
+					primer["label"]="Primer";
+
+					for(var i in data)
+					{
+						primer["data"].push([data[i].value[0], data[i].top]);
+						primer["data"].push([data[i].value[1], data[i].top]);
+						primer["data"].push(null);
+												
+					}
+					dataset.push(primer);
+					plot = $.plot($("#plot"), dataset, options);
+					for(var i in data)
+					{
+						var o = plot.pointOffset({x: data[i].value[0], y: data[i].top});
+						$("#plot").append('<div style="position:absolute;left:'+(o.left)+'px;top:'+(o.top - 15)+'px;clor:black;font-size:smaller;">'+data[i].name+'</div>');
+					}
+
+						/*
+						var o = plot.pointOffset({x: data[i].value[0], y: data[i].top});
+						var off = data[i].value[1]-data[i].value[0];
+						var ctx = plot.getCanvas().getContext("2d");
+						ctx.beginPath();
+						ctx.moveTo(o.left, o.top);
+						ctx.lineTo(o.left, o.top -2);
+						if(off > 0)
+						{
+							$("#plot").append('<div style="position:absolute;left:'+(o.left)+'px;top:'+(o.top - 15)+'px;clor:black;font-size:smaller;">'+data[i].name+'</div>');
+							ctx.lineTo(o.left+off, o.top -2);
+							ctx.lineTo(o.left+10, o.top + 7);
+							ctx.lineTo(o.left+10, o.top);
+						}
+						else
+						{
+							$("#plot").append('<div style="position:absolute;left:'+(o.left + off)+'px;top:'+(o.top - 15)+'px;clor:black;font-size:smaller;">'+data[i].name+'</div>');
+							ctx.lineTo(o.left+off, o.top -2);
+							ctx.lineTo(o.left-10, o.top + 7);
+							ctx.lineTo(o.left-10, o.top);
+
+						}
+						ctx.lineTo(o.left, o.top);
+						ctx.fillStyle = "#000000";
+						ctx.fill();
+						*/
+
+
+				}
+			});
+
+		}
+	});
+	$(":input[name=test]").click(function(){
+		alert($("#plot").html());
+	});
+
+});
+</script>
+<div id="plot" style="width:1000px;height:300px;"></div>
+<input type="button" name="test" value="test">
+
+

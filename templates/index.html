@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title>rRNA Utitlty</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<link type="text/css" href="/site_media/css/smoothness/jquery-ui-1.8.9.custom.css" rel="stylesheet" />	
+	<link type="text/css" href="/site_media/css/text.css" rel="stylesheet" />	
+	<link type="text/css" href="/site_media/css/reset.css" rel="stylesheet" />	
+	<link type="text/css" href="/site_media/css/960.css" rel="stylesheet" />
+	<script type="text/javascript" src="/site_media/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="/site_media/js/jquery-ui-1.8.9.custom.min.js"></script>
+	<!--[if IE]><script language="javascript" type="text/javascript" src="../excanvas.min.js"></script><![endif]-->
+	<script type="text/javascript" src="/site_media/js/jquery.flot.min.js"></script>
+	<script type="text/javascript" src="/site_media/js/jquery.flot.selection.min.js"></script>
+	<script type="text/javascript" src="/site_media/js/highcharts.js"></script>
+	<script type="text/javascript" src="/site_media/js/jquery.form.js"></script>
+	<script type="text/javascript" src="/site_media/js/grid.js"></script>
+	<script type="text/javascript" src="/site_media/js/my.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$("#menu a").click(function(){
+				$("#content").load($(this).attr("url"));
+			});
+			$("#content").load('/site_media/home.html');
+		});
+	</script>
+	<style type="text/css">
+		body{background: #E5E9EA;}
+		#header{background: #191919; color: #FFFFFF; height: 40px;padding-top:10px;}
+		#sidebar{background: #333333; color: #FFFFFF;height: 24px;}
+		#content li{font-size: 12px;}
+		#footer {margin-top: 50px; font-size: 11px; text-align:right; color: #999999; height: 24px;}
+
+		#menu{list-style-type: none; margin: 0px; padding: 0px;font-size: 13px;}
+		#menu li {float: left; margin: 0px; padding: 0px; border-right: 1px solid #000000;}
+		#menu a{display: block;margin: 0px; padding: 2px 10px; color: #ffffff; text-decoration: none;}
+		#menu a:hover, #menu a:active {background: #2C2324;}
+		#content h1 {font-size: 18px; border-bottom: 1px solid gray;margin: 10px;}
+		fieldset{width: 300px;}
+		label{display: inline-block; width: 100px; font-weight: bold; text-align: right; margin-right: 10px;}
+		table{width: 100%;border-collapse: collapse; background: #eee;font-size: 13px; }
+		table caption{background:#8DB7E1;text-align: center;font-weight:bold;padding: 2px;}
+		thead th{background:#6D6D6D;color:#eee;}
+		td, th{border:1px solid gray;}
+		td{background:#ffffff;text-align: right;padding: 2px;}
+		th{text-align: center; font-weight: bold;}
+		tbody th{background: #999999; color: #ffffff;}
+		tr:hover td{color: #009;background: #CCCCCC;}
+		.my_plot{padding: 10px 0;}
+		fieldset {font-size: 12px;}
+		fieldset p{padding: 2px;}
+		input,select,textarea {font-size: 11px;}
+		select {max-width: 150px;}
+	</style>	
+</head>
+<body>
+	<div id="header">
+		<div class="container_12">
+			<div class="grid_10">
+				<h1>&lt;Your Site Name&gt;</h1>
+			</div>
+			<div class="grid_2">
+			{% if login %}
+				Hello!{{ user.first_name }} {{ user.last_name }} <a href="/accounts/logout/">Logout</a>
+			{% endif %}
+			</div>
+		</div>
+	</div>
+	<div id="sidebar">
+		<div class="container_12">
+			<div class="grid_12">
+				<ul id="menu">
+					<li><a href="#" url="/site_media/home.html">Home</a></li>
+					<li><a href="#" url="/site_media/contact.html">Contact Me</a></li>
+					<li><a href="#" url="/gendbs/history/">History</a></li>
+					<li><a href="#" url="/site_media/16S_accuracy.html">16S rRNA-Accuracy</a></li>
+					<li><a href="#" url="/site_media/16S_bootstrap.html">16S rRNA-Bootstrap</a></li>
+					{% if login %}
+						<li><a href="#" url="/gendbs/post/1/">Post-Becteria</a></li>
+						<li><a href="#" url="/gendbs/post/2/">Post-Fungi</a></li>
+						<li><a href="#" url="/gendbs/list/">Result</a></li>
+					{% else %}
+						<li><a href="#" url="/accounts/login/">Login</a></li>
+						<li><a href="#" url="/accounts/register/">Register</a></li>
+					{% endif %}
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div id="content" class="container_12"></div>
+	<div class="clear"></div>
+	<div id="footer">
+		<div class="container_12">
+			<div class="grid_12"><p>Your footer</p></div>
+		</div>
+	</div>
+</body>
+</html>
+
+

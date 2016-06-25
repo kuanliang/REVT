@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Result</h1>
+<h2>Bectera</h2>
+<table>
+	<tr><th>Name</th><th>Database</th><th>Exaction</th><th>Start</th><th>End</th><th>Create data</th></tr>
+{% for item in data1 %}	
+	<tr><td>{{ item.name }}</td><td>{{ item.refdb }}</td><td> {{ item.extraction }}</td><td>{{ item.start }}</td><td>{{ item.end }}</td><td>{{ item.create_date }}</td></tr>
+{% endfor %}
+</table>
+
+<h2>Fungi</h2>
+<table>
+	<tr><th>Name</th><th>Database</th><th>Exaction</th><th>Start</th><th>End</th><th>Create data</th></tr>
+{% for item in data2 %}	
+	<tr><td>{{ item.name }}</td><td>{{ item.refdb }}</td><td> {{ item.extraction }}</td><td>{{ item.start }}</td><td>{{ item.end }}</td><td>{{ item.create_date }}</td></tr>
+{% endfor %}
+</table>
+
+{% endblock %}

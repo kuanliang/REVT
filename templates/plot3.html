@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block javascript %}
+$(function () {
+ var options = {
+ 	series:{
+		lines: {show: true},
+	},
+	legend:{
+		position: 'se'
+	},
+	xaxis: { tickDecimals: 0, max:1600, min:0 },
+	yaxis: { min: 0, max: 1 },
+	selection: { mode: "x" }
+ };
+
+	var data=[];
+	$.ajax({
+		url: "/gendbs/hyper_json/{{ typedb }}/", 
+		method: 'GET',
+		dataType: 'json',
+		success: function(ret){
+			data.push(ret.Accuracy);
+			data.push(ret.Entropy);
+			plot = $.plot($("#plot{{ typedb }}"), data, options);
+				
+			$(":input[name=start], :input[name=end]").change(function(){
+				start=$(":input[name=start]").val();
+				end=$(":input[name=end]").val();
+				plot.setSelection({ x1: start, x2: end });
+			});
+
+			$.ajax({
+				url: "/gendbs/Vregion_json/{{ typedb }}/",
+				method: 'GET',
+				dataType: 'json',
+				success: function(ret){
+					var data = ret.data;
+					for(var i in data)
+					{
+						var o = plot.pointOffset({x: data[i].value[0], y: data[i].top});
+						var off = data[i].value[1]-data[i].value[0];
+						$("#plot{{ typedb }}").append('<div style="position:absolute;left:'+(o.left)+'px;top:'+(o.top - 15)+'px;clor:black;font-size:smaller;">'+data[i].name+'</div>');
+						var ctx = plot.getCanvas().getContext("2d");
+						ctx.beginPath();
+						ctx.moveTo(o.left, o.top);
+						ctx.lineTo(o.left, o.top -1);
+						ctx.lineTo(o.left+off, o.top -1);
+						ctx.lineTo(o.left+off, o.top);
+						ctx.lineTo(o.left, o.top);
+						ctx.fillStyle = "#a040c0";
+						ctx.fill();
+
+
+					}
+
+				}
+			});
+			$.ajax({
+				url: "/gendbs/Primer_json/{{ typedb }}/",
+				method: 'GET',
+				dataType: 'json',
+				success: function(ret){
+					var data = ret.data;
+					for(var i in data)
+					{
+						var o = plot.pointOffset({x: data[i].value[0], y: data[i].top});
+						var off = data[i].value[1]-data[i].value[0];
+						var ctx = plot.getCanvas().getContext("2d");
+						ctx.beginPath();
+						ctx.moveTo(o.left, o.top);
+						ctx.lineTo(o.left, o.top -2);
+						if(off > 0)
+						{
+							$("#plot{{ typedb }}").append('<div style="position:absolute;left:'+(o.left)+'px;top:'+(o.top - 15)+'px;clor:black;font-size:smaller;">'+data[i].name+'</div>');
+							ctx.lineTo(o.left+off, o.top -2);
+							ctx.lineTo(o.left+10, o.top + 7);
+							ctx.lineTo(o.left+10, o.top);
+						}
+						else
+						{
+							$("#plot{{ typedb }}").append('<div style="position:absolute;left:'+(o.left + off)+'px;top:'+(o.top - 15)+'px;clor:black;font-size:smaller;">'+data[i].name+'</div>');
+							ctx.lineTo(o.left+off, o.top -2);
+							ctx.lineTo(o.left-10, o.top + 7);
+							ctx.lineTo(o.left-10, o.top);
+
+						}
+						ctx.lineTo(o.left, o.top);
+						ctx.fillStyle = "#000000";
+						ctx.fill();
+
+
+					}
+
+				}
+			});
+
+		}
+	});
+
+});
+{% endblock %}
+{% block content %}
+<div id="plot{{ typedb }}" style="width:600px;height:150px;"></div>
+{% endblock %}
